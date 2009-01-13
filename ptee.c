@@ -2,10 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <sys/wait.h>
+#include <signal.h>
+
+
 #include <sys/types.h>
+
 #include <unistd.h>
 
 #include <errno.h>
+
 
 struct ptee_command {
 	char* command;
@@ -19,7 +25,7 @@ int spawn_ptee_command(struct ptee_command *cmd)
 {
 	int p[2];
 	if (pipe(p)) {
-		fprintf(stderr, "ptee: can't create IPC pipe.");
+		perror("ptee");
 		exit(EXIT_FAILURE);
 	}
 	cmd->pipeout = p[0];
@@ -71,6 +77,8 @@ void ptee_rw(struct ptee_command *first)
 
 		while(n) {
 			if (write(n->pipein, buf, res) <= 0) {
+				fprintf(stderr, "ptee: Error condition in write\n");
+				exit(0);
 				// Error condition, remove the command node
 				if (n == first) {
 					first = n->next;
@@ -99,8 +107,21 @@ void ptee_rw(struct ptee_command *first)
 
 }
 
+void child_wait(int signal, siginfo_t *info, void*v)
+{
+	int status;
+	fprintf(stderr, "wait %d\n", info->si_pid);
+	waitpid(info->si_pid, &status, 0);
+	fprintf(stderr, "done wait %d\n", info->si_pid);
+}
+
 int main(int argc, char **argv)
 {
+	struct sigaction act;
+	act.sa_sigaction = child_wait;
+	act.sa_flags = SA_SIGINFO | SA_NOCLDSTOP | SA_RESTART;
+	sigaction(SIGCHLD, &act, NULL);
+
 
 	// Setup the command LL with our stdout as a virtual "process"
 	struct ptee_command *first = malloc(sizeof(struct ptee_command));
