@@ -22,16 +22,16 @@ int spawn_ptee_command(struct ptee_command *cmd)
 		fprintf(stderr, "ptee: can't create IPC pipe.");
 		exit(EXIT_FAILURE);
 	}
-	cmd->pipeout = p[1];
-	cmd->pipein = p[0];
+	cmd->pipeout = p[0];
+	cmd->pipein = p[1];
 
 	if ( (cmd->forkpid = fork()) == 0)
 	{
-		// Close STDOUT
+
 		close(STDIN_FILENO);
-		// Make STDOUT point to the pipe end point
+		// Make STDIN point to the pipe end point
 		dup2(cmd->pipeout, STDIN_FILENO);
-		// Close STDIN
+
 		close(STDOUT_FILENO);
 
 		// Try to determine the user's current shell
