@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-O2 -Wall -std=gnu99 -g3
+CFLAGS=-O2 -Wall -std=gnu99 
 
 all: ptee
 
