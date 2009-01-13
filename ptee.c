@@ -104,8 +104,8 @@ int main(int argc, char **argv)
 
 	// Setup the command LL with our stdout as a virtual "process"
 	struct ptee_command *first = malloc(sizeof(struct ptee_command));
-	first->pipeout = STDOUT_FILENO;
-	first->pipein = -1;
+	first->pipein = STDOUT_FILENO;
+	first->pipeout = -1;
 	first->command = NULL;
 	first->next = NULL;
 
