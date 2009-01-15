@@ -1,0 +1,43 @@
+.TH ptee 1 "January 2009" "ptee-1.0" "User Commands"
+.SH name
+ptee - duplicate standard input to several subshells, executing in parallel
+.SH SYNOPSIS
+.B ptee
+[SHELL COMMAND]...
+.SH DESCRIPTION
+Duplicate standard input to standard output as well as any number of sub-commands
+given on the command line. Each sub-command is executed in the context of a shell.
+By default, the shell given in the 
+.B SHELL 
+environment variable is used. If not defined, 
+.B /bin/sh 
+is used. 
+.PP
+As each command is run in a shell, any number of shell commands can be used, such as pipes
+and redirects. 
+.PP
+.B ptee 
+does only minimal buffering. If any sub-command stalls, the entire pipeline 
+will stall. As such, the pipeline will only run at the speed of the slowest component. 
+.SH BUGS
+.TP
+You can't specify which shell to use for subcommands.
+.TP
+Sub-commands stdout is lost by default. There is no stdout->stdin combinator.
+.SH OPTIONS
+There are no options.
+.SH EXAMPLES
+.TP
+Emulate `tee`: 
+ ... | 
+.B ptee
+"cat > outputfile" | ...
+.TP
+Create two filtered, compressed files: 
+ ... |
+.B ptee 
+"grep foo | zcat > out1.gz" "grep bar | zcat > out2.gz" | ...
+.SH AUTHOR
+Yann Ramin <atrus@stackworks.net>
+.SH COPYRIGHT
+(c) 2009 Yann Ramin. All rights reserved. Available under an MIT license from <http://www.stackfoundry.com/>
