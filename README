@@ -1,0 +1,39 @@
+ptee - duplicate standard input to several subshells, executing in parallel
+
+
+Duplicate standard input to standard output as well as any number of sub-commands
+given on the command line. Each sub-command is executed in the context of a shell.
+By default, the shell given in the SHELL environment variable is used. If not defined,
+/bin/sh is used.
+
+As each command is run in a shell, any number of shell commands can be used, such as pipes
+and redirects.
+
+ptee does only minimal buffering. If any sub-command stalls, the entire pipeline
+will stall. As such, the pipeline will only run at the speed of the slowest component.
+
+EXAMPLES
+========
+Emulate `tee`:
+		ptee "cat > outputfile" | ...
+
+Create two filtered, compressed files:
+
+ptee "grep foo | zcat > out1.gz" "grep bar | zcat > out2.gz" | ...
+
+BUGS
+====
+
+You can't specify which shell to use for subcommands.
+
+Sub-command's stdout is lost by default. There is no stdout->stdin combinator.
+
+Return code of ptee
+does not depend on the return code of any sub-shell.
+
+Does not vary its physical training regime. Shells may suffer from RSI.
+
+There are no options.
+
+Yann Ramin <atrus@stackworks.net>
+(c) 2009 Yann Ramin. All rights reserved. Available under an MIT license from <http://github.com/theatrus/ptee>
