@@ -15,11 +15,12 @@ will stall. As such, the pipeline will only run at the speed of the slowest comp
 EXAMPLES
 ========
 Emulate `tee`:
-		ptee "cat > outputfile" | ...
+
+		... | ptee "cat > outputfile" | ...
 
 Create two filtered, compressed files:
 
-ptee "grep foo | zcat > out1.gz" "grep bar | zcat > out2.gz" | ...
+	    ... | ptee "grep foo | zcat > out1.gz" "grep bar | zcat > out2.gz" | ...
 
 BUGS
 ====
@@ -28,8 +29,7 @@ You can't specify which shell to use for subcommands.
 
 Sub-command's stdout is lost by default. There is no stdout->stdin combinator.
 
-Return code of ptee
-does not depend on the return code of any sub-shell.
+Return code of ptee does not depend on the return code of any sub-shell.
 
 Does not vary its physical training regime. Shells may suffer from RSI.
 
